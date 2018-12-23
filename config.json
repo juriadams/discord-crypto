@@ -1,0 +1,15 @@
+{
+  "prefix": "=",
+  "token": "DISCORD-API-TOKEN",
+  "currencies": [
+    "BTC",
+    "IOT"
+  ],
+  "translateTo": [
+    "EUR",
+    "USD",
+    "CHF"
+  ],
+  "refreshDelay": 30000,
+  "cryptoApiKey": "CRYPTOCOMPARE-API-KEY"
+}
