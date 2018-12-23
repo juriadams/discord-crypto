@@ -63,7 +63,9 @@ client.on('message', message => {
     if (message.content.toLowerCase() === config.prefix + 'cc') {
         getCryptoData()
             .then(res => {
-                msg.channel.send('', getEmbed(res.data));
+                message.channel.send({
+                    embed: getEmbed(res.data)
+                })
             })
             .catch(err => {
                 console.log(err);
