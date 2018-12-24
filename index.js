@@ -1,6 +1,5 @@
 // Import modules
 const Discord = require('discord.js');
-const moment = require('moment');
 const axios = require('axios');
 const format = require('currency-formatter');
 const config = require('./config.json');
@@ -11,40 +10,55 @@ client.login(config.token);
 
 // Return promise
 function getCryptoData(inputCurrencies, outputCurrencies) {
-    return axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${inputCurrencies.join(',')}&tsyms=${outputCurrencies.join(',')}&api_key=${config.cryptoApiKey}`)
+    return axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${inputCurrencies.join(',')}&tsyms=${outputCurrencies.join(',')}&api_key=${config.cryptoApiKey}`)
 }
 
 // Return embed object
 function getEmbed(data) {
-    let fields = [];
-    let example = {
-        from: config.currencies[0],
-        to: config.translateTo[0],
-        value: data[config.currencies[0]][config.translateTo[0]]
-    };
-    let currencyKeys = Object.keys(data);
-    currencyKeys.forEach(currency => {
-        let exchangeData = config.translateTo.map(cur => {
+    // Define fields array for embed, prefill it with information-field
+    let fields = [
+        {
+            name: ':bulb: **Information**',
+            value: 'The following exchange rates are 1:X for each currency\n**▲/▼** shows the trend in the past 24 hours in exchange for each currency\n\u200B',
+            inline: false
+        }
+    ];
+
+    // Loop through all currencies and add their data to the fields array
+    Object.keys(data).forEach(currency => {
+        // Define trend icons and percent (from first translateTo-currency)
+        let trend = data[currency][config.translateTo[0]]['CHANGEPCT24HOUR'] > 0 ? ':chart_with_upwards_trend:' : ':chart_with_downwards_trend:';
+        let trendPercentPrefix = data[currency][config.translateTo[0]]['CHANGEPCT24HOUR'] > 0 ? '+' : '';
+        let trendPercent = data[currency][config.translateTo[0]]['CHANGEPCT24HOUR'].toFixed(2);
+
+        // Array with exchanges for crypto currency
+        let exchangeData = config.translateTo.map(translatedTo => {
             return {
-                name: cur,
-                exchange: data[currency][cur]
+                name: translatedTo,
+                exchange: data[currency][translatedTo]['PRICE'],
+                trend: data[currency][translatedTo]['CHANGE24HOUR'] > 0 ? '▲' : '▼'
             }
         });
+
+        // Generate string including exchange data
         let exchangeString = '';
         exchangeData.forEach(exchange => {
-            exchangeString += `${exchange['name']}: ` + format.format(exchange['exchange'], { code: exchange['name'], locale: 'de-DE' }) + '\n'
+            exchangeString += `${exchange.trend} | ${exchange.name}: ` + format.format(exchange.exchange, { code: exchange.name, locale: 'de-DE' }) + '\n'
         });
+
+        // Push the final data to fields
         fields.push({
-            name: `:chart_with_upwards_trend: **${currency}**`,
+            name: `${trend} **${currency}** (${trendPercentPrefix}${trendPercent}%)`,
             value: `${exchangeString}`,
             inline: true
         })
     });
 
+    // Return embed object, ready to attach to message
     return {
         title: ':money_with_wings: Current Crypto Exchange Rates',
         color: 4743568,
-        description: `**Note**: The following exchange rates are 1:X for each currency.\n `,
+        description: ``,
         footer: {
             icon_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
             text: `Discord-Crypto | github.com/4dams/Discord-Crypto`
@@ -55,15 +69,26 @@ function getEmbed(data) {
 
 // Set bots status message
 function setStatus() {
+    // Arrays with input and output currency
     const inputCurrency = ['BTC'];
     const outputCurrency = ['EUR'];
+
+    // Get crypto data for these currencies
     getCryptoData(inputCurrency, outputCurrency)
         .then(res => {
-            let statusString = `${inputCurrency} @ ${format.format(res.data[inputCurrency][outputCurrency], { code: outputCurrency, locale: 'de-DE' })} `;
+            // Get exchange rate/value and add to statusString
+            let value = res.data['RAW'][inputCurrency][outputCurrency]['PRICE'];
+            let statusString = `${inputCurrency} @ ${format.format(value, { code: outputCurrency, locale: 'de-DE' })} `;
+
+            // Set client status to 'Watching *inputCurrency* at *value*'
             client.user.setActivity(statusString, {
                 type: 'WATCHING'
             })
         })
+        .catch(err => {
+            console.log(err);
+            console.log('WARN: An error occurred fetching the crypto data!')
+        });
 }
 
 // Handle message-event
@@ -71,19 +96,21 @@ client.on('message', message => {
     if (message.content.toLowerCase() === config.prefix + 'cc') {
         getCryptoData(config.currencies, config.translateTo)
             .then(res => {
+                // Send response message including generated embed
                 message.channel.send({
-                    embed: getEmbed(res.data)
+                    embed: getEmbed(res.data['RAW'])
                 })
             })
             .catch(err => {
                 console.log(err);
+                message.channel.send(':warning: An error occurred fetching the crypto data!')
             });
     }
 });
 
 // Handle ready-event
 client.on('ready', () => {
-    // Log success message
+    // Display success message
     console.log('Discord-Crypto online!');
 
     // Set and then update clients status message in given interval
