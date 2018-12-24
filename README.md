@@ -9,7 +9,7 @@ in a neat and informative design.
 ## Prerequisites
 In order to get this application running, you will need the following things:
 
-- Node.js (tested upon version 9)
+- A [Node.js](https://nodejs.org/en/) installation
 - A [cryptocompare.com](https://cryptocompare.com) api key
 - A [registered Discord application](https://discordapp.com/developers/applications/)
 

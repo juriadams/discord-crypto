@@ -57,10 +57,10 @@ function getEmbed(data) {
     // Return embed object, ready to attach to message
     return {
         title: ':money_with_wings: Current Crypto Exchange Rates',
-        color: 4743568,
+        color: 0x7289DA,
         description: ``,
         footer: {
-            icon_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
+            icon_url: 'https://i.4da.ms/cNexOb.png',
             text: `Discord-Crypto | github.com/4dams/Discord-Crypto`
         },
         fields: fields
