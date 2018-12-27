@@ -34,5 +34,8 @@
       "value": "ETH"
     }
   ],
-  "updateDelay": 30000
+  "updateDelay": 30000,
+  "activeChannels": [
+    "527783326652694548"
+  ]
 }

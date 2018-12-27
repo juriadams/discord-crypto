@@ -173,6 +173,11 @@ function setStatus() {
 
 // Handle message-event
 client.on('message', message => {
+    // Return if message was sent outside allowed channels
+    if (config.activeChannels.length > 0) {
+        if (!config.activeChannels.includes(message.channel.id)) return;
+    }
+
     // Ignore all messages sent by bots
     if (message.author.bot) return;
 
@@ -181,9 +186,8 @@ client.on('message', message => {
         // Our very basic command handler
         // TODO: Put stuff like this into own class
         let msg = message.content.toLowerCase(); // String: Full message
-        let command = msg.split(' ')[0].replace(config.prefix, ''); // String: command without prefix
-        let args = msg.split(' ').filter(e => e !== ''); // Array: All arguments after command
-        args.shift(); // Remove command from args
+        const args = msg.slice(config.prefix.length).trim().split(/ +/g);
+        const command = args.shift().toLowerCase();
 
         // COMMAND: Exchange
         if (command === 'exchange' || command === 'cc') {
