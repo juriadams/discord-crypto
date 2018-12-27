@@ -3,8 +3,10 @@
 Discord-Crypto is a simple self-hostable bot for Discord providing current crypto currency exchange rates 
 in a neat and informative design.
 
-## Example
-![](https://i.4da.ms/MM7KR7.png)
+## Examples
+![](https://i.imgur.com/ZAcSpwF.png)
+![](https://i.imgur.com/DrygOk8.png)
+![](https://i.imgur.com/Nrzf0e5.png)
 
 ## Prerequisites
 In order to get this application running, you will need the following things:
@@ -32,6 +34,13 @@ node index.js
 After you installed the bot and added it to your server, simply type `=cc` in any channel the bot can see
 and it will provide you with the most recent exchange rates.
 
-## Planned Features
-- [ ] Request exchange rates for given currencies (e.g. '=cc btc eth')
-- [ ] More commands
+## Upcoming
+- [X] Request exchange rates for given currencies (e.g. '=cc btc eth')
+- [ ] Edit `config.json` via commands
+- [ ] Detailed explanation of `config.json`
+- [ ] Split commands into file
+- [ ] ^ Update command handler
+- [ ] Crypto news
+- [ ] **Caching to prevent unnecessary API calls**
+
+

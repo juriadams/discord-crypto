@@ -1,15 +1,38 @@
 {
   "prefix": "=",
-  "token": "DISCORD-API-TOKEN",
+  "token": "DISCORD-BOT-TOKEN",
   "currencies": [
     "BTC",
-    "IOT"
+    "IOT",
+    "ETH",
+    "EOS",
+    "XRP",
+    "LTC"
   ],
   "translateTo": [
     "EUR",
     "USD",
     "CHF"
   ],
-  "refreshDelay": 30000,
-  "cryptoApiKey": "CRYPTOCOMPARE-API-KEY"
+  "cryptoApiKey": "CRYPTOCOMPARE-API-KEY",
+  "defaultOutput": "EUR",
+  "statusMessages": [
+    {
+      "type": "message",
+      "value": "Type \"%PREFIX%help\" to start!"
+    },
+    {
+      "type": "currency",
+      "value": "BTC"
+    },
+    {
+      "type": "currency",
+      "value": "IOT"
+    },
+    {
+      "type": "currency",
+      "value": "ETH"
+    }
+  ],
+  "updateDelay": 30000
 }
